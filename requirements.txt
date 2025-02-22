@@ -1,0 +1,55 @@
+# UI and App frameworks
+kivy
+
+# ChromaDB for persistent storage
+chromadb
+
+# Transformers for NLP and TTS models
+transformers
+
+# Natural language utilities
+inflect
+
+# GUI automation and control
+pyautogui
+keyboard
+mouse
+
+# System information and Windows integration
+psutil
+pywin32
+pygetwindow
+pywinauto
+
+# Web scraping and HTTP requests
+scrapy
+requests
+beautifulsoup4
+twisted
+newspaper3k
+
+# Deep learning frameworks and related libraries
+torch
+torchaudio
+
+# Machine Learning
+scikit-learn
+geocoder
+
+# Audio processing and analysis
+pyaudio
+pyannote.audio
+pyttsx3
+librosa
+speechbrain
+SpeechRecognition
+pydub
+scipy
+noisereduce
+resampy
+joblib
+soundfile
+simpleaudio
+
+# Numerical computations
+numpy

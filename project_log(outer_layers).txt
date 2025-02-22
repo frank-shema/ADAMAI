@@ -1,0 +1,271 @@
+This log contains information regarding the Brains Outer Layers(The SpeechRecognition and SpeechGeneration) and their supporting utility functions.
+
+Here’s a chart that organizes the Outer Layers functions, classes, and their descriptions in a structured format:
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| **Category**                         | **Function/Class**                                                              | **Description**                                                                  |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|   Audio Processing & Manipulation    | combine_audio_data(audio_data_list)                                             | Merges multiple audio segments into one.                                         |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | combine_audio_arrays(array_list)                                                | Converts NumPy arrays into WAV files, then combines them.                        |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | dub_array(audio_dict)                                                           | Converts a NumPy array into an AudioSegment.                                     |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | play_audio(audio_segment)                                                       | Plays an AudioSegment using PyAudio.                                             |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | convert_audio_to_mono_16k(file_path, output_path)                               | Converts an audio file to mono and 16 kHz.                                       |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|   Audio Enhancement & Adjustments    | adjust_rms(audio, target_rms)                                                   | Adjusts the loudness (RMS) of an audio segment.                                  |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | adjust_spectral_properties(y, sr, target_centroid, target_bandwidth)            | Modifies spectral properties using bandpass filters.                             |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | adjust_tempo(y, sr, target_tempo)                                               | Adjusts the tempo of an audio signal.                                            |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|   Noise Reduction & VAD              | reduce_noise(audio, sr, noise_sample_length, prop_decrease)                     | Removes background noise from audio.                                             |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | apply_vad(audio, sample_rate, aggressiveness, window_duration, vad_max_silence) | Detects speech segments using voice activity detection (VAD).                    |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | prepare_for_vad(audio, audio_sample_rate, target_sr)                            | Prepares audio for VAD by resampling and normalizing.                            |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | clean_audio(audio_data, sample_rate)                                            | Denoises and removes non-speech parts of an audio file.                          |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|   End-to-End Audio Processing        | prep_audio(file_path, output_path)                                              | Full pipeline for cleaning, normalizing, adjusting, and converting audio.        |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|   Audio Embedding Extraction         | process_audio_files(input_folder)                                               | Extracts speaker embeddings from all WAV files in a folder.                      |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|   GMM Training & Handling            | train_gmm(embeddings)                                                           | Trains a Gaussian Mixture Model (GMM) on extracted embeddings.                   |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | save_gmm_model(gmm, output_path)                                                | Saves a trained GMM model.                                                       |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | clone_voice(input_folder, gmm_save_path)                                        | Trains a GMM on audio files and saves it.                                        |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | extract_xvector_from_gmm(trained_gmm)                                           | Extracts an X-vector (speaker embedding) from a GMM.                             |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | gmm_blender(gmm1, gmm2, ratio)                                                  | Merges two GMM models into a new GMM.                                            |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | train_and_save_gmm(features, output_path, name, n_components, max_iter)         | Trains and saves a GMM model using extracted features.                           |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|   Speech Synthesis & TTS             | load_or_download_transformers_model(model_class, model_name, local_path)        | Loads or downloads a Transformer-based TTS model.                                |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | generate_speech(text, speaker_embedding)                                        | Converts text to speech using a Transformer-based TTS model.                     |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | speech_with_gmm(text, gmm)                                                      | Generates speech using a speaker embedding from a GMM.                           |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | play_audio_file(path)                                                           | Plays an audio file.                                                             |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | tts_with_gmm(text, gmm)                                                         | Generates and plays speech with a GMM speaker embedding.                         |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | tts(text)                                                                       | Uses pyttsx3 for basic text-to-speech synthesis.                                 |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|   Speaker Embeddings Extraction      | load_sb_model()                                                                 | Loads the SpeechBrain X-vector model.                                            |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | extract_sb_embeddings(audio_path)                                               | Extracts embeddings using the SpeechBrain model.                                 |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | load_pn_model()                                                                 | Loads the Pyannote speaker recognition model.                                    |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | extract_pn_embeddings(audio_path)                                               | Extracts embeddings using the Pyannote model.                                    |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|   Audio Feature Extraction           | extract_audio_features(file_path)                                               | Extracts MFCCs, pitch, spectral properties, and embeddings.                      |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|   Speaker Diarization & Transcription| load_audio(file_path)                                                        | Loads an audio file as an AudioSegment.                                          |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | diarize_audio(file_path)                                                        | Performs speaker diarization using PyAnnote.                                     |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | segment_and_save_audio(diarization, audio, output_dir)                          | Splits and saves audio segments per speaker.                                     |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | separate_speakers(file_path, output_dir)                                        | Separates audio into individual speaker files.                                   |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | find_speakers(audio_file, gmm_dir, threshold, unknown_speakers)                 | Identifies speakers using trained GMMs.                                          |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | transcribe_audio(audio_data)                                                    | Uses Google Speech-to-Text to transcribe audio.                                  |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | diarized_transcription(audio_file, gmm_dir, unknown_speakers)                   | Transcribes and diarizes an audio file.                                          |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | async transcribe_audio_async(audio_data)                                        | Asynchronous speech-to-text transcription.                                       |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|Wake Word Detection & Continuous Transcription| check_text_for_wake_word(text, wake_words)                              | Detects wake words in transcribed text.                                          |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | record_and_transcribe(wake_words, timer, word_count, gmm_dir, unknown_speakers, output) | Continuously records and transcribes speech.                             |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | async async_record_and_transcribe(...)                                          | Asynchronous real-time transcription.                                            |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|   User Input & Speech Recognition    | SpeechRecognition Class                                                         | Handles speech recognition and transcription.                                    |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | APSR(...)                                                                       | Asynchronous real-time speech recognition.                                       |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | ASR(...)                                                                        | Synchronous speech recognition.                                                  |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|   Input Recognition                  | Speech(dialogue, need_audio)                                                    | Captures speech input from a user.                                               |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | Text(dialogue, choice)                                                          | Opens a text input dialog.                                                       |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | Path(dialogue, extension)                                                       | Opens a file selection dialog.                                                   |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|   Speech Generation                  | SpeechGeneration Class                                                          | Handles text-to-speech conversion.                                               |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+|                                      | Speech(text, gmm)                                                               | Converts text to speech using either a standard or personalized GMM-based voice. |
+|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+This chart organizes each class and function with its description. It should give you a clear overview of the system and its capabilities.
+
+Below is a structured summary of each function (and class) grouped by category. Each entry includes a short, detailed description.
+
+Audio Processing & Manipulation-
+combine_audio_data(audio_data_list):
+Merges multiple audio segments into one. Accepts either AudioSegment objects or objects that provide WAV data and sample rate.
+
+combine_audio_arrays(array_list):
+Converts a list of NumPy audio arrays into temporary WAV files, loads them as AudioSegments, and concatenates them.
+
+dub_array(audio_dict):
+Converts an audio dictionary (with a NumPy array and sampling rate) into an AudioSegment by saving to a temporary WAV file and reloading it.
+
+play_audio(audio_segment):
+Plays an AudioSegment using PyAudio by extracting raw data, opening an audio stream, and writing the data to the stream.
+
+convert_audio_to_mono_16k(file_path, output_path):
+Converts an audio file to mono and a 16 kHz sample rate (if necessary), exporting the result as a WAV file.
+
+Audio Enhancement & Feature Adjustments-
+adjust_rms(audio, target_rms):
+Adjusts the loudness (RMS) of an AudioSegment by applying a gain so that its RMS matches the target value.
+
+adjust_spectral_properties(y, sr, target_centroid, target_bandwidth):
+Modifies the spectral centroid and bandwidth of an audio signal using bandpass filtering and gain adjustments.
+
+adjust_tempo(y, sr, target_tempo):
+Time-stretches the audio signal to match a target tempo based on the current estimated tempo.
+
+Noise Reduction & Voice Activity Detection (VAD)-
+reduce_noise(audio, sr, noise_sample_length=10000, prop_decrease=1.0):
+Applies noise reduction to an audio signal using a noise profile from the initial segment of the audio.
+
+apply_vad(audio, sample_rate, aggressiveness=3, window_duration=0.03, vad_max_silence=0.7):
+Performs voice activity detection by analyzing the energy of the audio, segmenting regions where speech is present.
+
+prepare_for_vad(audio, audio_sample_rate, target_sr=16000):
+Normalizes and resamples audio to a target sampling rate (typically 16 kHz) to prepare it for VAD.
+
+clean_audio(audio_data, sample_rate=44100):
+Combines noise reduction, VAD, and cleaning steps to isolate speech segments from an audio recording.
+
+End-to-End Audio Processing-
+prep_audio(file_path, output_path):
+Implements a full audio processing pipeline: cleans audio, normalizes RMS, adjusts spectral properties and tempo, and converts the audio to mono 16 kHz.
+
+Audio Embedding Extraction-
+process_audio_files(input_folder):
+Processes all WAV files in a folder by preparing them with prep_audio and then extracting speaker embeddings from each file.
+
+GMM Training & Handling-
+train_gmm(embeddings):
+Trains a Gaussian Mixture Model (GMM) on given embeddings, using up to 10 components or the number of samples, whichever is lower.
+
+save_gmm_model(gmm, output_path):
+Saves a trained GMM model to a file using joblib.
+
+clone_voice(input_folder, gmm_save_path):
+Processes audio files in a folder to extract embeddings, trains a GMM on them, saves the model, and cleans up temporary audio files.
+
+extract_xvector_from_gmm(trained_gmm):
+Extracts a speaker embedding (X-vector) from a trained GMM and normalizes it.
+
+gmm_blender(gmm1, gmm2, ratio):
+Blends two GMMs by combining their X-vectors (duplicating one if needed) and training a new GMM on the combined embeddings.
+
+train_and_save_gmm(features, output_path, name, n_components=50, max_iter=500):
+Trains a GMM on combined audio features and saves the model with a specified name.
+
+Speech Synthesis & Text-to-Speech (TTS):
+load_or_download_transformers_model(model_class, model_name, local_path)
+Loads a pre-trained Transformer TTS model from a local directory or downloads it if not available locally.
+
+generate_speech(text, speaker_embedding):
+Converts text to speech using a transformer-based TTS model. If the text is long (over 40 words), it splits the text into chunks for synthesis.
+
+speech_with_gmm(text, gmm):
+Extracts an X-vector from a given GMM and uses it as a speaker embedding for generating speech from text.
+
+play_audio_file(path):
+Plays an audio file using the simpleaudio library.
+
+tts_with_gmm(text, gmm):
+Loads a trained GMM model, generates speech using the extracted speaker embedding, and plays the resulting audio in a new thread.
+
+tts(text):
+Uses the pyttsx3 engine for standard text-to-speech synthesis without using a custom speaker model.
+
+Speaker Embeddings Extraction-
+load_sb_model():
+Loads the SpeechBrain X-vector model for speaker recognition.
+
+extract_sb_embeddings(audio_path):
+Extracts speaker embeddings from an audio file using the SpeechBrain model.
+
+load_pn_model():
+Loads the pyannote model for speaker recognition.
+
+extract_pn_embeddings(audio_path):
+Extracts speaker embeddings from an audio file using the pyannote model.
+
+Audio Feature Extraction-
+extract_audio_features(file_path):
+Loads an audio file and extracts multiple features (MFCCs, spectral properties, LPC, PLP, pitch, zero-crossing rate, formant frequencies, etc.) as well as speaker embeddings from SpeechBrain and pyannote models. All features are concatenated into a single feature array.
+
+Speaker Diarization & Transcription-
+load_audio(file_path):
+Loads an audio file as an AudioSegment using pydub.
+
+diarize_audio(file_path):
+Uses a pretrained PyAnnote pipeline to perform speaker diarization on the audio file.
+
+segment_and_save_audio(diarization, audio, output_dir):
+Splits the audio into segments based on diarization results and saves each segment as a separate file labeled by speaker.
+
+separate_speakers(file_path, output_dir="segmented_audio"):
+Combines diarization and segmentation steps to generate individual speaker audio files.
+
+find_speakers(audio_file, gmm_dir, threshold=-5.2, unknown_speakers=False):
+Matches the separated speaker segments against trained GMM models to identify the speaker names, using a score threshold.
+
+transcribe_audio(audio_data):
+Uses Google Speech-to-Text to transcribe a given audio segment.
+
+diarized_transcription(audio_file, gmm_dir, unknown_speakers=False):
+Combines speaker diarization with speech transcription to produce a speaker-aware transcript.
+
+async transcribe_audio_async(audio_data):
+Provides an asynchronous version of audio transcription using Google Speech-to-Text.
+
+Wake Word Detection & Continuous Transcription-
+check_text_for_wake_word(text, wake_words):
+Checks whether the provided text contains any of the specified wake words.
+
+record_and_transcribe(wake_words=None, timer=None, word_count=None, gmm_dir=None, unknown_speakers=False, output="text"):
+Continuously records and transcribes audio, optionally applying speaker diarization and stopping when a wake word is detected or certain time/word limits are reached.
+
+async async_record_and_transcribe(wake_words=None, timer=None, word_count=None, gmm_dir=None, unknown_speakers=False, output="text"):
+An asynchronous version of the above function, yielding transcription results in real-time.
+
+User Input & Speech Recognition-
+SpeechRecognition Class:
+
+APSR(wake_words=None, timer=None, word_count=None, gmm_dir=None, unknown_speakers=False, output="text"):
+Asynchronously records and transcribes speech, yielding results as they are generated.
+
+ASR(wake_words=None, timer=None, word_count=None, gmm_dir=None, unknown_speakers=False, output="text"):
+Synchronously records and transcribes speech, printing and returning the result.
+
+InputRecognition Class:
+Speech(dialogue=None, need_audio=False):
+Presents a dialogue box for speech input and captures both text and optionally audio.
+
+Text(dialogue=None, choice=None):
+Opens a text input dialog using Tkinter, optionally pre-filling with a choice.
+
+Path(dialogue=None, extension=None):
+Opens a file selection dialog and returns the selected file path, validating file extension if specified.
+
+Speech Generation-
+SpeechGeneration Class:
+
+Speech(text, gmm=None):
+Converts text to speech. If a GMM model is provided, it uses TTS with a custom speaker embedding; otherwise, it falls back to standard TTS.

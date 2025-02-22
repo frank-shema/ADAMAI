@@ -1,0 +1,72 @@
+This log contains information regarding the Brains Cerebrum and the systems current GUI.
+
+Here’s a structured chart of the Cerebrum Class (Core AI Processing) and GUI (Main User Interface) functions:
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Function/Class**                      | **Description**                                                                                                                                                |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   Cerebrum Class (Core AI Processing)   | `__init__(self, client, user_dir="data/user_data")`, Initializes the AI brain with speech recognition, text-to-speech, RAG processing, and profile management. |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|    _build_wake_word_map(self)           | Generates a dictionary mapping bot names (wake words) to bot IDs from stored profiles.                                                                         |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|    _get_user_id(self, speaker_name)     | Fetches the user ID from stored profiles using the speaker's name.                                                                                             |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|    listen(self)                         | Continuously listens for speech input, detects the wake word, identifies the speaker, and generates a response.                                                |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|    stop(self)                           | Stops the listening loop by changing the state.                                                                                                                |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   GUI (Main User Interface)             | `Main.__init__(self, **kwargs)`, Initializes the GUI layout with Start and Stop buttons.                                                                       |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|    update_button_state(self)            | Updates which button is displayed based on whether the system is listening.                                                                                    |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|    schedule_update(self)                | Schedules periodic updates for the button state.                                                                                                               |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|    start_listening(self, instance)      | Starts the listening process in a separate thread.                                                                                                             |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|    stop_listening(self, instance)       | Calls the function to stop listening.                                                                                                                          |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   Application Entry Point               | `MyApp.build(self)`, Constructs the main application interface.                                                                                                |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|    MyApp().run()                        | Starts the Kivy application.                                                                                                                                   |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+This chart organizes each class and function with its description. It should give you a clear overview of the system and its capabilities. For Layer specific information check the Inner and Outer layers project logs.
+
+Below is a structured summary of each function (and class) grouped by category. Each entry includes a short, detailed description.
+
+Cerebrum Class (Core AI Processing)-
+__init__(self, client, user_dir="data/user_data"):
+Initializes the AI brain with speech recognition, text-to-speech, RAG processing, and profile management.
+
+_build_wake_word_map(self):
+Generates a dictionary mapping bot names (wake words) to bot IDs from stored profiles.
+
+_get_user_id(self, speaker_name):
+Fetches the user ID from stored profiles using the speaker's name.
+
+listen(self):
+Continuously listens for speech input, detects the wake word, identifies the speaker, and generates a response.
+
+stop(self):
+Stops the listening loop by changing the state.
+
+GUI (Main User Interface)-
+Main.__init__(self, **kwargs):
+Initializes the GUI layout with Start and Stop buttons.
+
+update_button_state(self):
+Updates which button is displayed based on whether the system is listening.
+
+schedule_update(self):
+Schedules periodic updates for the button state.
+
+start_listening(self, instance):
+Starts the listening process in a separate thread.
+
+stop_listening(self, instance):
+Calls the function to stop listening.
+
+Application Entry Point-
+MyApp.build(self):
+Constructs the main application interface.
+
+MyApp().run():
+Starts the Kivy application.
