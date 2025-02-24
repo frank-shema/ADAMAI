@@ -164,8 +164,10 @@ def check_text(text, hotword, case_sense=False, non_letters=False):
     return found_hotwords if found_hotwords else False
 
 
+
 def crop_text(text, options):
     original_text = text  # Save the original text for rev_crop
+
 
     # Handle word cropping
     if 'word_count' in options:
@@ -179,6 +181,7 @@ def crop_text(text, options):
         text = ' '.join(words)
 
     # Handle start_word cropping
+    
     if 'start_word' in options:
         start_word = options['start_word']
         start_index = text.find(start_word)
