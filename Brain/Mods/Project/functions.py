@@ -43,7 +43,7 @@ def reconnect_to_display():
     """Re-connects to the display using the saved cropped image."""
     # Open the Connect window
     pyautogui.hotkey('win', 'k')
-    time.sleep(2)  # Wait for the window to open
+    time.sleep(2)  
 
     # Locate the saved image of the display area
     if not os.path.exists(cropped_display_area_path):
